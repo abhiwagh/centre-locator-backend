@@ -3,9 +3,12 @@ import app from "./app";
 import sequelize from "./config/db.config"
 
 dotenv.config();
-const PORT = process.env.PORT || 2804;
+const PORT = process.env.PORT || 3000; // Use a common port like 3000 for local dev
 
-export default app;
+// --- CRITICAL CHANGE FOR VERCEL COMPATIBILITY ---
+// Use CommonJS export to ensure Vercel reliably finds the handler.
+module.exports = app;
+// ------------------------------------------------
 
 if (process.env.VERCEL_ENV !== 'production') {
     (async () => {
@@ -18,7 +21,6 @@ if (process.env.VERCEL_ENV !== 'production') {
             });
         } catch (err: any) {
             console.error("Database connection failed:", err.message);
-            // Optionally, remove process.exit(1) if you want the app to run locally even without the DB, but usually you want it to fail.
             process.exit(1);
         }
     })();
